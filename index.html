@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNMP Data Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>SNMP Data Viewer</h1>
+    <div class="button-container">
+        <button id="udp-button">UDP Table</button>
+        <button id="arp-button">ARP Table</button>
+        <button id="system-group-button">System Group</button>
+        <button id="snmp-stats-button">SNMP Statistics</button> <!-- New button -->
+    </div>
+
+    <div id="table-container">
+        <table id="snmp-table">
+            <thead>
+                <tr></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="update-form-container" style="display: none;">
+        <h3>Update System Group</h3>
+        <div id="form-content"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
