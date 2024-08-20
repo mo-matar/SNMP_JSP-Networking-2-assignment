@@ -1,14 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snmp Manager</title>
+</head>
+<body>
+
 <?php
 // Enable error reporting
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-echo("****Testing started *** <br>");
+
+echo("<h2>****Testing started **** </h2>");
 $ip = "127.0.0.1:161";
 
 // Section 1: Display the contents of the System Group except System Services with edit functionality
-echo "===============================<br>";
-echo "------- System Group -----------<br>";
+echo "<hr><section id='system-group-section'>";
+echo "<div><h3>----------- System Group -----------<h3></div><br>";
 
 $oids = [
     "1.3.6.1.2.1.1.1.0" => "System Description", // sysDescr
@@ -19,7 +28,14 @@ $oids = [
     "1.3.6.1.2.1.1.6.0" => "System Location"  // sysLocation
 ];
 
+echo"<div><table id='system-group'>";
+
 // Display the current values
+echo "<tr>";
+foreach ($oids as $label) {
+    echo "<th> $label </th>";
+}
+echo "</tr><tr>";
 foreach ($oids as $oid => $label) {
     $value = snmp2_get($ip, "public", $oid);
     if ($value === false) {
@@ -27,17 +43,20 @@ foreach ($oids as $oid => $label) {
     } else {
         $parts = explode(': ', $value);
         $value = isset($parts[1]) ? $parts[1] : $parts[0]; // Safely remove type
-        echo "$label: $value <br>";
+        echo "<td> $value </td>";
     }
 }
+echo"</tr></table></div></section><br>";
 
-echo "---------update section---------------<br>";
+
+
+echo "<section id='update-section'><div><h3>---------------Update section---------------</h3></div><br><div id='froms'>";
 
 // Separate forms for each editable field
 foreach ($oids as $oid => $label) {
     if ($oid == "1.3.6.1.2.1.1.4.0" || $oid == "1.3.6.1.2.1.1.5.0" || $oid == "1.3.6.1.2.1.1.6.0") {
         echo "<form method='POST'>";
-        echo "<label>$label: </label><input type='text' name='new_value'><input type='hidden' name='oid' value='$oid'><input type='submit' value='Update'><br>";
+        echo "<label>$label: &nbsp </label><input type='text' name='new_value'><input type='hidden' name='oid' value='$oid'><input type='submit' value='Update'><br>";
         echo "</form>";
     }
 }
@@ -59,13 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-echo "===============================<br>";
+echo "</div><div><br><hr></div></section><br>";
 
 
 
 
 // Section 2: Display the content of UDP table
-echo "------- UDP Table -----------<br>";
+echo "----------- UDP Table -----------<br><br>";
 
 $udp_table = snmp2_walk($ip, "public", ".1.3.6.1.2.1.7");
 echo "<table border='1'>";
@@ -75,10 +94,10 @@ foreach ($udp_table as $index => $entry) {
 }
 echo "</table>";
 
-echo "===============================<br>";
+echo "<br><hr><br>";
 
 // Section 3: Display the content of ARP table
-echo "------- ARP Table -----------<br>";
+echo "----------- ARP Table -----------<br><br>";
 
 $a = snmp2_walk($ip, "public", ".1.3.6.1.2.1.4.22.1.2");
 $b = snmp2_walk($ip, "public", ".1.3.6.1.2.1.4.22.1.3");
@@ -103,8 +122,8 @@ $snmpGroupOids = [
 // SNMP Group for Method 2: By Walk
 $snmpWalkOid = "1.3.6.1.2.1.11";
 
-echo "===============================<br>";
-echo "------- SNMP Group Statistics -----------<br>";
+echo "<br><hr><br>";
+echo "----------- SNMP Group Statistics -----------<br><br>";
 // Enable error reporting
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -210,6 +229,70 @@ for ($i = 0; $i < max(count($results_get), count($results_walk)); $i++) {
 }
 echo "</table>";
 ?>
+<style>
+    h2{
+        position:relative;
+        justify-content: center;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        margin: 0;
+        padding: 10PX;
+        background-color: #408080;
+        color: white;
+    }
+    section{
+        width: 100%;
+        justify-content: center;
+        /* display: flex; */
+    }
+    #system-group-section{
+        display: block;
+    }
 
+    table,tr th,td{
+        border: 1px black solid;
+    }
 
+    #system-group{
+        width: 100%;
+    }
 
+    div{
+        align-items: center;
+        text-align: center;
+        padding: 0 10PX;
+    }
+
+    th,td{
+        padding: 5px;
+        align-items: center;
+        text-align: center;
+        font-size: 18px;
+    }
+    #froms{
+        width: 100%;
+        text-align: center;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    form{
+        font-size: 20PX;
+        display: flex;
+        justify-content: space-around;
+    }
+    body{
+        background-color: rgb(245, 245, 236);
+        /* margin: 0;
+        padding: 0; */
+
+    }
+
+        #udp-table-div{
+        display: flex;
+        justify-content: center;
+    }
+</style>
+</body>
+</html>
