@@ -250,8 +250,7 @@ public class SignInFrame extends javax.swing.JFrame {
             myConn.setRequestMethod("POST");
             myConn.setDoOutput(true);
 
-            String postData = "username=" + URLEncoder.encode(username, "UTF-8")
-                    + "&password=" + URLEncoder.encode(password, "UTF-8")
+                        String postData = "password=" + URLEncoder.encode(password, "UTF-8")
                     + "&id=" + URLEncoder.encode(id, "UTF-8");
 
             try (OutputStream os = myConn.getOutputStream()) {
