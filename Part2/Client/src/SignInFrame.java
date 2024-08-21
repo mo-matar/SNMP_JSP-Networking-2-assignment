@@ -192,25 +192,25 @@ public class SignInFrame extends javax.swing.JFrame {
 
 
     private void sendToServlet() {
-        String urlString = "http://localhost:8888/Server/responseServlet";
+        String urlString = "http://localhost:8888/Server/responseServlet";//tomcat server port
         String username = this.usernameTextField.getText();
         String password = this.passwordTextField.getText();
 
         try {
             URL url = new URL(urlString);
             HttpURLConnection myConn = (HttpURLConnection) url.openConnection();
-            myConn.setRequestMethod("POST");
+            myConn.setRequestMethod("POST");//post since we are sending confidential info
             myConn.setDoOutput(true);
 
             String postData = "username=" + URLEncoder.encode(username, "UTF-8")
-                    + "&password=" + URLEncoder.encode(password, "UTF-8");
+                    + "&password=" + URLEncoder.encode(password, "UTF-8");//encode the data to match url standards
 
             try (OutputStream os = myConn.getOutputStream()) {
                 byte[] input = postData.getBytes("UTF-8");
                 os.write(input, 0, input.length);
             }
 
-            int b;
+            int b;//integer to be converted to char and will be -1 at the end of the reading operation
             String responseString = "";
             try (InputStream is = myConn.getInputStream()) {
                 while ((b = is.read()) != -1) {
